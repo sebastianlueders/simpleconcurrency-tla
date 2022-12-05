@@ -48,7 +48,7 @@ Cancel ==
 Tick ==
     /\ running = ON
     /\ timeRemaining' = timeRemaining - 1
-    /\ timeRemaining >= 0
+    /\ timeRemaining' >= 0
     /\ IF timeRemaining' = 0 THEN running' = OFF ELSE UNCHANGED << running >>
     /\ UNCHANGED << door >>
 

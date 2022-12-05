@@ -73,7 +73,7 @@ Next ==
     \/ CloseDoor
     \/ Tick
 
-Spec == Init /\ [][Next]_vars /\ WF_vars(Tick)
+Spec == Init /\ [][Next]_vars \* /\ WF_vars(Tick)
 
 ====
 

@@ -41,12 +41,9 @@ Start ==
     /\ UNCHANGED << door, timeRemaining >>
 
 Cancel ==
-    \/  /\ running = OFF
-        /\ timeRemaining' = 0
-        /\ UNCHANGED << door, running >>
-    \/  /\ running = ON
-        /\ running' = OFF
-        /\ UNCHANGED << door, timeRemaining >>
+    /\ running' = OFF
+    /\ timeRemaining' = 0
+    /\ UNCHANGED << door >>
 
 Tick ==
     /\ running = ON

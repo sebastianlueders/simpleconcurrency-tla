@@ -20,7 +20,7 @@ DoorSafety == TRUE
 
 HeatLiveness == TRUE
 
-\* HeatLiveness == running = ON ~> running = OFF
+\* HeatLiveness == [](running = ON ~> running = OFF)
 
 MaxTime == 60
 
@@ -63,7 +63,9 @@ CloseDoor ==
     /\ door' = CLOSED
     /\ UNCHANGED << running, timeRemaining >>
 
-Fairness == WF_timeRemaining(Tick)
+TickProgress == TRUE
+
+\* TickProgress == WF_timeRemaining(Tick)
 
 Next ==
     \/ IncTime
@@ -73,7 +75,7 @@ Next ==
     \/ CloseDoor
     \/ Tick
 
-Spec == Init /\ [][Next]_vars \* /\ WF_vars(Tick)
+Spec == Init /\ [][Next]_vars /\ TickProgress
 
 ====
 

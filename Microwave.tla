@@ -16,11 +16,11 @@ TypeOK == door \in { CLOSED, OPEN } /\ running \in { OFF, ON } /\ timeRemaining 
 
 DoorSafety == TRUE
 
-\* DoorSafety == [](door = OPEN => running = OFF)
+\* DoorSafety == door = OPEN => running = OFF
 
 HeatLiveness == TRUE
 
-\* HeatLiveness == [](running = ON ~> running = OFF)
+\* HeatLiveness == running = ON ~> running = OFF
 
 MaxTime == 60
 

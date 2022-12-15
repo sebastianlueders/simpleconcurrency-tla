@@ -1,6 +1,6 @@
 -------------------------- MODULE Microwave  --------------------------
 
-EXTENDS TLC, Integers, FiniteSets
+EXTENDS TLC, Integers
 
 CONSTANTS 
     OFF, ON, CLOSED, OPEN
@@ -14,13 +14,17 @@ vars == << door, running, timeRemaining >>
 
 TypeOK == door \in { CLOSED, OPEN } /\ running \in { OFF, ON } /\ timeRemaining \in Nat
 
-DoorSafety == TRUE
+\* DoorSafety == TRUE
 
-\* DoorSafety == door = OPEN => running = OFF
+DoorSafety == door = OPEN => running = OFF
 
-HeatLiveness == TRUE
+\* HeatLiveness == TRUE
 
-\* HeatLiveness == running = ON ~> running = OFF
+HeatLiveness == running = ON ~> running = OFF
+
+OnlyTicksAfterStart == TRUE
+
+\* OnlyTicksAfterStart == [][running = ON => ~ (running' = OFF /\ timeRemaining' > 0)]_<<running, timeRemaining>>
 
 MaxTime == 60
 
@@ -36,6 +40,7 @@ IncTime ==
     /\ UNCHANGED << door, running >>
 
 Start ==
+    /\ door = CLOSED \* TODO remove
     /\ timeRemaining > 0
     /\ running' = ON
     /\ UNCHANGED << door, timeRemaining >>
@@ -54,15 +59,16 @@ Tick ==
 
 OpenDoor ==
     /\ door' = OPEN
-    /\ UNCHANGED << running, timeRemaining >>
+    /\ running' = OFF \* TODO remove
+    /\ UNCHANGED << timeRemaining >>
 
 CloseDoor ==
     /\ door' = CLOSED
     /\ UNCHANGED << running, timeRemaining >>
 
-TickProgress == TRUE
+\* TickProgress == TRUE
 
-\* TickProgress == WF_timeRemaining(Tick)
+TickProgress == WF_timeRemaining(Tick)
 
 Next ==
     \/ IncTime

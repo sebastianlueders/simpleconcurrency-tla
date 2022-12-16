@@ -14,13 +14,13 @@ vars == << door, running, timeRemaining >>
 
 TypeOK == door \in { CLOSED, OPEN } /\ running \in { OFF, ON } /\ timeRemaining \in Nat
 
-\* DoorSafety == TRUE
+DoorSafety == TRUE
 
-DoorSafety == door = OPEN => running = OFF
+\* DoorSafety == door = OPEN => running = OFF
 
-\* HeatLiveness == TRUE
+HeatLiveness == TRUE
 
-HeatLiveness == running = ON ~> running = OFF
+\* HeatLiveness == running = ON ~> running = OFF
 
 OnlyTicksAfterStart == TRUE
 
@@ -40,7 +40,6 @@ IncTime ==
     /\ UNCHANGED << door, running >>
 
 Start ==
-    /\ door = CLOSED \* TODO remove
     /\ timeRemaining > 0
     /\ running' = ON
     /\ UNCHANGED << door, timeRemaining >>
@@ -59,8 +58,7 @@ Tick ==
 
 OpenDoor ==
     /\ door' = OPEN
-    /\ running' = OFF \* TODO remove
-    /\ UNCHANGED << timeRemaining >>
+    /\ UNCHANGED << running, timeRemaining >>
 
 CloseDoor ==
     /\ door' = CLOSED

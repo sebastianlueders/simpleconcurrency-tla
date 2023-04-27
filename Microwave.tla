@@ -64,9 +64,9 @@ CloseDoor ==
     /\ door' = CLOSED
     /\ UNCHANGED << running, timeRemaining >>
 
-\* TickProgress == TRUE
+TickProgress == TRUE
 
-TickProgress == WF_timeRemaining(Tick)
+\* TickProgress == WF_timeRemaining(Tick)
 
 Next ==
     \/ IncTime

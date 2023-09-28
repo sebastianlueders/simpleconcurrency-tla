@@ -33,7 +33,7 @@ Init ==
     /\ running = OFF
     /\ timeRemaining = 0
 
-(* increment remaining time by one second *)
+\* increment remaining time by one second
 IncTime ==
     /\ running = OFF
     /\ timeRemaining' = timeRemaining + 1

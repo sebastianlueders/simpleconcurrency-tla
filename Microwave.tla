@@ -33,6 +33,7 @@ Init ==
     /\ running = OFF
     /\ timeRemaining = 0
 
+(* increment remaining time by one second *)
 IncTime ==
     /\ running = OFF
     /\ timeRemaining' = timeRemaining + 1
@@ -84,7 +85,6 @@ Spec == Init /\ [][Next]_vars /\ TickProgress
       action := "10min"
       action := "1min"
       action := "10sec"
-      action := "1sec"
       action := "power"
       action := "timer"
 *)

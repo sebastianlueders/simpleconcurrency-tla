@@ -10,8 +10,6 @@ VARIABLES
     running,
     timeRemaining
 
-vars == << door, running, timeRemaining >>
-
 TypeOK == door \in { CLOSED, OPEN } /\ running \in { OFF, ON } /\ timeRemaining \in Nat
 
 DoorSafety == TRUE
@@ -24,7 +22,7 @@ HeatLiveness == TRUE
 
 OnlyTicksAfterStart == TRUE
 
-\* OnlyTicksAfterStart == [][running = ON => ~ (running' = OFF /\ timeRemaining' > 0)]_<<running, timeRemaining>>
+\* OnlyTicksAfterStart == [][running = ON => running' = ON \/ timeRemaining' = 0 \/ door' = OPEN)]_<< running, timeRemaining >>
 
 MaxTime == 60
 

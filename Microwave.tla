@@ -10,6 +10,8 @@ VARIABLES
     running,
     timeRemaining
 
+vars == << door, running, timeRemaining >>
+
 TypeOK == door \in { CLOSED, OPEN } /\ running \in { OFF, ON } /\ timeRemaining \in Nat
 
 DoorSafety == TRUE

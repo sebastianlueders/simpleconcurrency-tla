@@ -14,18 +14,6 @@ vars == << door, running, timeRemaining >>
 
 TypeOK == door \in { CLOSED, OPEN } /\ running \in { OFF, ON } /\ timeRemaining \in Nat
 
-DoorSafety == TRUE
-
-\* DoorSafety == door = OPEN => running = OFF
-
-HeatLiveness == TRUE
-
-\* HeatLiveness == running = ON ~> running = OFF
-
-OnlyTicksAfterStart == TRUE
-
-\* OnlyTicksAfterStart == [][running = ON => running' = ON \/ timeRemaining' = 0 \/ door' = OPEN)]_<< running, timeRemaining >>
-
 MaxTime == 60
 
 Init ==
@@ -78,6 +66,21 @@ Next ==
     \/ Tick
 
 Spec == Init /\ [][Next]_vars /\ TickProgress
+
+DoorSafety == TRUE
+
+\* DoorSafety == door = OPEN => running = OFF
+
+\* DoorSafety == running = ON => door = CLOSED
+
+HeatLiveness == TRUE
+
+\* HeatLiveness == running = ON ~> running = OFF
+
+RunsUntilDoneOrInterrupted == TRUE
+
+\* RunsUntilDoneOrInterrupted == 
+\*     [][running = ON => running' = ON \/ timeRemaining' = 0 \/ door' = OPEN]_<< running, timeRemaining >>
 
 ====
 

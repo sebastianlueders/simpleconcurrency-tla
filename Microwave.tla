@@ -80,7 +80,7 @@ HeatLiveness == TRUE
 RunsUntilDoneOrInterrupted == TRUE
 
 \* RunsUntilDoneOrInterrupted == 
-\*     [][running = ON => running' = ON \/ timeRemaining' = 0 \/ door' = OPEN]_<< running, timeRemaining >>
+\*     [][running = ON => running' = ON \/ timeRemaining' = 0 \/ door' = OPEN]_vars
 
 ====
 

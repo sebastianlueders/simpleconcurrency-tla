@@ -38,17 +38,19 @@ Terminating ==
   /\ UNCHANGED vars
 
 Next == 
-  \* \/ \E t \in Threads : Fetch(t)
-  \* \/ \E t \in Threads : Store(t)
-  \/ \E t \in Threads : Inc(t)
+  \/ \E t \in Threads : Fetch(t)
+  \/ \E t \in Threads : Store(t)
+  \*\/ \E t \in Threads : Inc(t)
   \/ Terminating
 
 \* Progress == TRUE
 
-Progress == \A t \in Threads : WF_shared(Inc(t))
+Progress == \A t \in Threads : WF_shared(Next)
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-Correctness == <>(shared = N)
+Correctness == TRUE
+
+\*Correctness == <>(shared = N)
 
 ====

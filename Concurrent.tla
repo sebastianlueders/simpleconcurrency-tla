@@ -45,19 +45,19 @@ Terminating ==
   /\ UNCHANGED vars
 
 Next == 
-\*   \/ \E t \in Threads : Fetch(t)
-\*   \/ \E t \in Threads : Store(t)
-  \/ \E t \in Threads : Inc(t)
+  \/ \E t \in Threads : Fetch(t)
+  \/ \E t \in Threads : Store(t)
+\*  \/ \E t \in Threads : Inc(t)
   \/ Terminating \* OK to stay in final state pc[t] = "done"
 
-\* Progress == TRUE
+Progress == TRUE
 
-Progress == \A t \in Threads : WF_shared(Next)
+\* Progress == \A t \in Threads : WF_shared(Next)
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-\* Correctness == TRUE
+Correctness == TRUE
 
-Correctness == <>(shared = N)
+\* Correctness == <>(shared = N)
 
 ====

@@ -48,7 +48,7 @@ Next ==
   \/ \E t \in Threads : Fetch(t)
   \/ \E t \in Threads : Store(t)
 \*  \/ \E t \in Threads : Inc(t)
-  \/ Terminating \* OK to stay in final state pc[t] = "done"
+\*  \/ Terminating \* OK to stay in final state pc[t] = "done"
 
 Progress == TRUE
 

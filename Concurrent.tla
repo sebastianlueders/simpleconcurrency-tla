@@ -2,62 +2,64 @@
 
 EXTENDS Naturals
 
-VARIABLES shared, pc, local
+VARIABLES shared, state, local, lock
 
-vars == << shared, pc, local >>
+vars == << shared, state, local, lock >>
 
 N == 5
 
 Threads == 0..(N - 1)
 
 TypeOK == 
-    /\ shared \in Nat
-    /\ DOMAIN local = Threads
-    /\ \A t \in Threads: local[t] \in 0..N
-    /\ DOMAIN pc = Threads
-    /\ \A v \in Threads: pc[v] \in { "fetch", "store", "done" }
+  /\ shared \in Nat
+  /\ DOMAIN local = Threads
+  /\ \A t \in Threads: local[t] \in 0..N
+  /\ DOMAIN state = Threads
+  /\ \A v \in Threads: state[v] \in { "fetch", "store", "done" }
+  /\ DOMAIN lock = Threads
+  /\ \A v \in Threads: lock[v] \in BOOLEAN 
 
 Init ==
   /\ shared = 0
-  /\ pc = [t \in Threads |-> "fetch"]
+  /\ state = [t \in Threads |-> "fetch"]
   /\ local = [t \in Threads |-> 0]
+  /\ lock = [t \in Threads |-> FALSE]
 
 Fetch(t) == \* local = local + 1
-  /\ pc[t] = "fetch"
+  /\ state[t] = "fetch"
+  /\ \A k \in Threads : ~ lock[k]
   /\ local' = [local EXCEPT ![t] = shared]
-  /\ pc' = [pc EXCEPT ![t] = "store"]
+  /\ state' = [state EXCEPT ![t] = "store"]
+  /\ lock' = [lock EXCEPT ![t] = TRUE]
   /\ UNCHANGED << shared >>
 
 Store(t) == \* shared = local
-  /\ pc[t] = "store"
+  /\ state[t] = "store"
+  /\ lock[t]
   /\ shared' = local[t] + 1
-  /\ pc' = [pc EXCEPT ![t] = "done"]
-  /\ UNCHANGED << local >>
-
-Inc(t) ==
-  /\ pc[t] = "fetch"
-  /\ shared' = shared + 1
-  /\ pc' = [pc EXCEPT ![t] = "done"]
+  /\ state' = [state EXCEPT ![t] = "done"]
+  /\ lock' = [lock EXCEPT ![t] = FALSE]
   /\ UNCHANGED << local >>
 
 Terminating ==
-  /\ \A t \in Threads : pc[t] = "done"
+  /\ \A t \in Threads : state[t] = "done"
   /\ UNCHANGED vars
+
+\* WithTermination == FALSE
 
 Next == 
   \/ \E t \in Threads : Fetch(t)
   \/ \E t \in Threads : Store(t)
-\*  \/ \E t \in Threads : Inc(t)
-\*  \/ Terminating \* OK to stay in final state pc[t] = "done"
+  \/ Terminating \* OK to stay in final state state[t] = "done"
 
-Progress == TRUE
+\* Progress == TRUE
 
-\* Progress == \A t \in Threads : WF_shared(Next)
+Progress == \A t \in Threads : WF_state(Next)
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-Correctness == TRUE
+\* Correctness == TRUE
 
-\* Correctness == <>(shared = N)
+Correctness == <>(shared = N)
 
 ====

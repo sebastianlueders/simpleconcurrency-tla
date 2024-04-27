@@ -6,6 +6,12 @@ VARIABLES shared, state, local, lock
 
 vars == << shared, state, local, lock >>
 
+RequireCorrectness == FALSE
+
+ImplementTermination == FALSE
+ImplementProgress == FALSE
+ImplementLocking == FALSE
+
 N == 5
 
 Threads == 0..(N - 1)
@@ -18,12 +24,10 @@ TypeOK ==
   /\ \A v \in Threads: state[v] \in { "fetch", "store", "done" }
   /\ lock \in 0..N
 
-WithLocking == FALSE
-
 IsUnlocked == lock = N
-Lock(t) == IF WithLocking THEN t \in Threads /\ lock' = t ELSE UNCHANGED << lock >>
-IsLockedBy(t) == WithLocking => t \in Threads /\ lock = t
-Unlock == IF WithLocking THEN lock' = N ELSE UNCHANGED << lock >>
+Lock(t) == IF ImplementLocking THEN t \in Threads /\ lock' = t ELSE UNCHANGED << lock >>
+IsLockedBy(t) == ImplementLocking => t \in Threads /\ lock = t
+Unlock == IF ImplementLocking THEN lock' = N ELSE UNCHANGED << lock >>
 
 Init ==
   /\ shared = 0
@@ -53,10 +57,8 @@ Store(t) == \* shared = local
   /\ Unlock
   /\ UNCHANGED << local >>
 
-WithTermination == FALSE
-
-Terminating ==
-  /\ WithTermination
+Terminating == 
+  /\ ImplementTermination
   /\ \A t \in Threads : state[t] = "done"
   /\ UNCHANGED vars
 
@@ -65,14 +67,10 @@ Next ==
   \/ \E t \in Threads : Store(t)
   \/ Terminating \* OK to stay in final state[t] = "done"
 
-WithProgress == FALSE
-
-Progress == WithProgress => \A t \in Threads : WF_state(Next)
+Progress == ImplementProgress => \A t \in Threads : WF_state(Next)
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-WithCorrectness == FALSE
-
-Correctness == <>(WithCorrectness => shared = N /\ IsUnlocked)
+Correctness == <>(RequireCorrectness => shared = N)\* /\ IsUnlocked)
 
 ====

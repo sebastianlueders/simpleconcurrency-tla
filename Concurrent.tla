@@ -16,50 +16,63 @@ TypeOK ==
   /\ \A t \in Threads: local[t] \in 0..N
   /\ DOMAIN state = Threads
   /\ \A v \in Threads: state[v] \in { "fetch", "store", "done" }
-  /\ DOMAIN lock = Threads
-  /\ \A v \in Threads: lock[v] \in BOOLEAN 
+  /\ lock \in 0..N
+
+WithLocking == FALSE
+
+IsUnlocked == lock = N
+Lock(t) == IF WithLocking THEN t \in Threads /\ lock' = t ELSE UNCHANGED << lock >>
+IsLockedBy(t) == WithLocking => t \in Threads /\ lock = t
+Unlock == IF WithLocking THEN lock' = N ELSE UNCHANGED << lock >>
 
 Init ==
   /\ shared = 0
   /\ state = [t \in Threads |-> "fetch"]
   /\ local = [t \in Threads |-> 0]
-  /\ lock = [t \in Threads |-> FALSE]
+  /\ IsUnlocked
 
 Fetch(t) == \* local = local + 1
+  \* preconditions
   /\ state[t] = "fetch"
-  /\ \A k \in Threads : ~ lock[k]
+  /\ IsUnlocked
+  \* effect
   /\ local' = [local EXCEPT ![t] = shared]
+  \* state change
   /\ state' = [state EXCEPT ![t] = "store"]
-  /\ lock' = [lock EXCEPT ![t] = TRUE]
+  /\ Lock(t)
   /\ UNCHANGED << shared >>
 
 Store(t) == \* shared = local
+  \* preconditions
   /\ state[t] = "store"
-  /\ lock[t]
+  /\ IsLockedBy(t)
+  \* effect
   /\ shared' = local[t] + 1
+  \* state change
   /\ state' = [state EXCEPT ![t] = "done"]
-  /\ lock' = [lock EXCEPT ![t] = FALSE]
+  /\ Unlock
   /\ UNCHANGED << local >>
 
+WithTermination == FALSE
+
 Terminating ==
+  /\ WithTermination
   /\ \A t \in Threads : state[t] = "done"
   /\ UNCHANGED vars
-
-\* WithTermination == FALSE
 
 Next == 
   \/ \E t \in Threads : Fetch(t)
   \/ \E t \in Threads : Store(t)
-  \/ Terminating \* OK to stay in final state state[t] = "done"
+  \/ Terminating \* OK to stay in final state[t] = "done"
 
-\* Progress == TRUE
+WithProgress == FALSE
 
-Progress == \A t \in Threads : WF_state(Next)
+Progress == WithProgress => \A t \in Threads : WF_state(Next)
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-\* Correctness == TRUE
+WithCorrectness == FALSE
 
-Correctness == <>(shared = N)
+Correctness == <>(WithCorrectness => shared = N /\ IsUnlocked)
 
 ====

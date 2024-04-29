@@ -1,3 +1,5 @@
+\*34567890123456789012345678901234567890123456789012
+
 -------------------------- MODULE Concurrent  --------------------------
 
 EXTENDS Naturals
@@ -16,18 +18,24 @@ N == 5
 
 Threads == 0..(N - 1)
 
-TypeOK == 
+TypeOK ==
   /\ shared \in Nat
   /\ DOMAIN local = Threads
   /\ \A t \in Threads: local[t] \in 0..N
   /\ DOMAIN state = Threads
-  /\ \A v \in Threads: state[v] \in { "fetch", "store", "done" }
+  /\ \A v \in Threads: state[v] \in
+    { "fetch", "store", "done" }
   /\ lock \in 0..N
 
 IsUnlocked == lock = N
-Lock(t) == IF ImplementLocking THEN t \in Threads /\ lock' = t ELSE UNCHANGED << lock >>
-IsLockedBy(t) == ImplementLocking => t \in Threads /\ lock = t
-Unlock == IF ImplementLocking THEN lock' = N ELSE UNCHANGED << lock >>
+Lock(t) == IF ImplementLocking
+  THEN t \in Threads /\ lock' = t
+  ELSE UNCHANGED << lock >>
+IsLockedBy(t) == ImplementLocking =>
+  t \in Threads /\ lock = t
+Unlock == IF ImplementLocking
+  THEN lock' = N
+  ELSE UNCHANGED << lock >>
 
 Init ==
   /\ shared = 0
@@ -57,20 +65,22 @@ Store(t) == \* shared = local
   /\ Unlock
   /\ UNCHANGED << local >>
 
-Terminating == 
+Terminating ==
   /\ ImplementTermination
   /\ \A t \in Threads : state[t] = "done"
   /\ UNCHANGED vars
 
-Next == 
+Next ==
   \/ \E t \in Threads : Fetch(t)
   \/ \E t \in Threads : Store(t)
-  \/ Terminating \* OK to stay in final state[t] = "done"
+  \/ Terminating \* OK to stay in state[t] = "done"
 
-Progress == ImplementProgress => \A t \in Threads : WF_state(Next)
+Progress == ImplementProgress =>
+  \A t \in Threads : WF_state(Next)
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-Correctness == <>(RequireCorrectness => shared = N)\* /\ IsUnlocked)
+Correctness == <>(RequireCorrectness =>
+  (shared = N /\ IsUnlocked))
 
 ====

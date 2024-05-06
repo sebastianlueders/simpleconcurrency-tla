@@ -14,9 +14,9 @@ ImplementTermination == FALSE
 ImplementProgress == TRUE
 ImplementLocking == FALSE
 
-N == 3 \* number of threads
+N == 2 \* number of threads
 
-K == 5 \* number of increments per thread
+K == 4 \* number of increments per thread
 
 Threads == 0..(N - 1)
 
@@ -89,17 +89,17 @@ Progress == ImplementProgress =>
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-\* FIXME minimum as function of N and K 
+Max(X, Y) == IF X > Y THEN X ELSE Y
 
-(*
-K if N = 1 or K <= 3
-N = 2 -> 
-*)
+MinShared == 
+  IF K <= 3
+  THEN K
+  ELSE Max(K + 1 - N, 3)
 
 Correctness == <>(
   IF RequireCorrectness
   THEN shared = N * K /\ IsUnlocked \* correctness when each increment is atomic
-  ELSE shared > K - 1 \* minimum result when increments can overlap
+  ELSE shared > MinShared \* minimum result when increments can overlap
 )
 
 ====

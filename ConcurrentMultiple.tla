@@ -4,6 +4,10 @@
 
 EXTENDS Naturals
 
+CONSTANTS
+  N, \* number of threads
+  K  \* number of increments per thread
+
 VARIABLES shared, state, count, local, lock
 
 vars == << shared, state, count, local, lock >>
@@ -13,10 +17,6 @@ RequireCorrectness == FALSE
 ImplementTermination == FALSE
 ImplementProgress == TRUE
 ImplementLocking == FALSE
-
-N == 2 \* number of threads
-
-K == 4 \* number of increments per thread
 
 Threads == 0..(N - 1)
 

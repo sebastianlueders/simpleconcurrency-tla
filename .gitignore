@@ -7,8 +7,10 @@
 
 *.out
 *___model_SnapShot*.launch
+*_TTrace_*
 states/
 model/
+_apalache-out/
 
 .vscode
 **/.DS_Store

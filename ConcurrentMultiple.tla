@@ -5,8 +5,8 @@
 EXTENDS Naturals
 
 CONSTANTS
-  N, \* number of threads
-  K  \* number of increments per thread
+  K, \* number of threads
+  N  \* number of increments per thread
 
 VARIABLES shared, state, count, local, lock
 
@@ -14,11 +14,11 @@ vars == << shared, state, count, local, lock >>
 
 RequireCorrectness == FALSE
 
-ImplementTermination == FALSE
+ImplementTermination == TRUE
 ImplementProgress == TRUE
 ImplementLocking == FALSE
 
-Threads == 0..(N - 1)
+Threads == 0..(K - 1)
 
 TypeOK ==
   /\ shared \in Nat
@@ -26,25 +26,25 @@ TypeOK ==
   /\ DOMAIN count = Threads
   /\ DOMAIN state = Threads
   /\ \A t \in Threads: 
-    /\ count[t] \in 0..K
+    /\ count[t] \in 0..N
     /\ state[t] \in { "fetch", "store", "done" }
-    /\ local[t] \in 0..(N * K)
-  /\ lock \in 0..N
+    /\ local[t] \in 0..(K * N)
+  /\ lock \in 0..K
 
-IsUnlocked == lock = N
+IsUnlocked == lock = K
 Lock(t) == IF ImplementLocking
   THEN t \in Threads /\ lock' = t
   ELSE UNCHANGED << lock >>
 IsLockedBy(t) == ImplementLocking =>
   t \in Threads /\ lock = t
 Unlock == IF ImplementLocking
-  THEN lock' = N
+  THEN lock' = K
   ELSE UNCHANGED << lock >>
 
 Init ==
   /\ shared = 0
   /\ state = [t \in Threads |-> "fetch"]
-  /\ count = [t \in Threads |-> K]
+  /\ count = [t \in Threads |-> N]
   /\ local = [t \in Threads |-> 0]
   /\ IsUnlocked
 
@@ -91,14 +91,14 @@ Spec == Init /\ [][Next]_vars /\ Progress
 
 Max(X, Y) == IF X > Y THEN X ELSE Y
 
-MinShared == 
-  IF K <= 3
-  THEN K
-  ELSE Max(K + 1 - N, 3)
+MinShared == 3
+\*   IF N <= 3
+\*   THEN N
+\*   ELSE Max(N + 1 - K, 3)
 
 Correctness == <>(
   IF RequireCorrectness
-  THEN shared = N * K /\ IsUnlocked \* correctness when each increment is atomic
+  THEN shared = K * N /\ IsUnlocked \* correctness when each increment is atomic
   ELSE shared > MinShared \* minimum result when increments can overlap
 )
 

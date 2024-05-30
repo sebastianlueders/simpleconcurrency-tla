@@ -14,27 +14,27 @@ ImplementTermination == FALSE
 ImplementProgress == FALSE
 ImplementLocking == FALSE
 
-N == 5
+K == 5
 
-Threads == 0..(N - 1)
+Threads == 0..(K - 1)
 
 TypeOK ==
   /\ shared \in Nat
   /\ DOMAIN local = Threads
-  /\ \A t \in Threads: local[t] \in 0..N
+  /\ \A t \in Threads: local[t] \in 0..K
   /\ DOMAIN state = Threads
   /\ \A v \in Threads: state[v] \in
     { "fetch", "store", "done" }
-  /\ lock \in 0..N
+  /\ lock \in 0..K
 
-IsUnlocked == lock = N
+IsUnlocked == lock = K
 Lock(t) == IF ImplementLocking
   THEN t \in Threads /\ lock' = t
   ELSE UNCHANGED << lock >>
 IsLockedBy(t) == ImplementLocking =>
   t \in Threads /\ lock = t
 Unlock == IF ImplementLocking
-  THEN lock' = N
+  THEN lock' = K
   ELSE UNCHANGED << lock >>
 
 Init ==
@@ -81,6 +81,6 @@ Progress == ImplementProgress =>
 Spec == Init /\ [][Next]_vars /\ Progress
 
 Correctness == <>(RequireCorrectness =>
-  (shared = N /\ IsUnlocked))
+  (shared = K /\ IsUnlocked))
 
 ====

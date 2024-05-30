@@ -2,7 +2,7 @@
 
 EXTENDS ConcurrentMultiple
 
-Const_K == 5
-Const_N == 3
+Const_K == 2
+Const_N == 5
 
 ====

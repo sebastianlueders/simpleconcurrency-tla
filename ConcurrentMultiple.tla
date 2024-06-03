@@ -4,9 +4,14 @@
 
 EXTENDS Naturals
 
-CONSTANTS
-  K, \* number of threads
-  N  \* number of increments per thread
+Min(X, Y) == IF X < Y THEN X ELSE Y
+
+K == 2 \* number of threads
+N == 1 \* number of increments per thread
+
+MinShared == IF K = 1
+  THEN N
+  ELSE Min(2, N)
 
 VARIABLES shared, state, count, local, lock
 
@@ -21,6 +26,10 @@ ImplementLocking == FALSE
 Threads == 0..(K - 1)
 
 TypeOK ==
+  /\ K \in Nat
+  /\ K > 0
+  /\ N \in Nat
+  /\ N > 0
   /\ shared \in Nat
   /\ DOMAIN local = Threads
   /\ DOMAIN count = Threads
@@ -89,17 +98,9 @@ Progress == ImplementProgress =>
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-Max(X, Y) == IF X > Y THEN X ELSE Y
-
-MinShared == 3
-\*   IF N <= 3
-\*   THEN N
-\*   ELSE Max(N + 1 - K, 3)
-
-Correctness == <>(
+Correctness == <>
   IF RequireCorrectness
   THEN shared = K * N /\ IsUnlocked \* correctness when each increment is atomic
-  ELSE shared > MinShared \* minimum result when increments can overlap
-)
+  ELSE [](shared > MinShared) \* minimum result when increments can overlap
 
 ====

@@ -2,13 +2,11 @@
 
 EXTENDS Naturals
 
-\* 5..7 -> 4
-\* 8..10 -> 5
-\* 11..13 -> 6
 
-K == 4
-N == 4
-MinShared == (N + 1) \div 3 + 2
+
+K == 2
+N == 5
+MinShared == 2
 
 Threads == 0..(K - 1)
 
@@ -17,7 +15,7 @@ Threads == 0..(K - 1)
 variables shared = 0
 
 define
-    Correctness == <>(shared > MinShared)
+    Correctness == <>[](shared > MinShared)
 end define;
 
 fair process inc \in Threads
@@ -33,11 +31,11 @@ end process;
 
 end algorithm; *)
 
-\* BEGIN TRANSLATION (chksum(pcal) = "4c07df00" /\ chksum(tla) = "45044520")
+\* BEGIN TRANSLATION (chksum(pcal) = "d80d0f1b" /\ chksum(tla) = "431cb708")
 VARIABLES shared, pc
 
 (* define statement *)
-Correctness == <>(shared > MinShared)
+Correctness == <>[](shared > MinShared)
 
 VARIABLES local, count
 

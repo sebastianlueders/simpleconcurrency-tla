@@ -23,4 +23,4 @@ jobs:
       - name: Download TLA⁺
         run: wget https://nightly.tlapl.us/dist/tla2tools.jar
       - name: Check models
-        run: ${{ github.action_path }}/check.sh
+        run: .github/workflows/check.sh

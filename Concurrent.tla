@@ -4,17 +4,16 @@
 
 EXTENDS Naturals
 
+CONSTANTS
+    K, \* number of concurrent threads
+    RequireCorrectness,
+    ImplementTermination,
+    ImplementProgress,
+    ImplementLocking
+
 VARIABLES shared, state, local, lock
 
 vars == << shared, state, local, lock >>
-
-RequireCorrectness == FALSE
-
-ImplementTermination == FALSE
-ImplementProgress == FALSE
-ImplementLocking == FALSE
-
-K == 5
 
 Threads == 0..(K - 1)
 

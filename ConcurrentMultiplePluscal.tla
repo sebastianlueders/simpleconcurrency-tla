@@ -2,11 +2,15 @@
 
 EXTENDS Naturals
 
+CONSTANTS
+    K, \* number of concurrent threads
+    N \* number of repetitions per thread
 
+Min(X, Y) == IF X < Y THEN X ELSE Y
 
-K == 2
-N == 5
-MinShared == 2
+MinShared == IF K = 1
+  THEN N
+  ELSE Min(2, N)
 
 Threads == 0..(K - 1)
 
@@ -30,54 +34,5 @@ begin F:
 end process;
 
 end algorithm; *)
-
-\* BEGIN TRANSLATION (chksum(pcal) = "d80d0f1b" /\ chksum(tla) = "431cb708")
-VARIABLES shared, pc
-
-(* define statement *)
-Correctness == <>[](shared > MinShared)
-
-VARIABLES local, count
-
-vars == << shared, pc, local, count >>
-
-ProcSet == (Threads)
-
-Init == (* Global variables *)
-        /\ shared = 0
-        (* Process inc *)
-        /\ local = [self \in Threads |-> 0]
-        /\ count = [self \in Threads |-> N]
-        /\ pc = [self \in ProcSet |-> "F"]
-
-F(self) == /\ pc[self] = "F"
-           /\ IF count[self] > 0
-                 THEN /\ local' = [local EXCEPT ![self] = shared]
-                      /\ pc' = [pc EXCEPT ![self] = "S"]
-                 ELSE /\ pc' = [pc EXCEPT ![self] = "Done"]
-                      /\ local' = local
-           /\ UNCHANGED << shared, count >>
-
-S(self) == /\ pc[self] = "S"
-           /\ shared' = local[self] + 1
-           /\ count' = [count EXCEPT ![self] = count[self] - 1]
-           /\ pc' = [pc EXCEPT ![self] = "F"]
-           /\ local' = local
-
-inc(self) == F(self) \/ S(self)
-
-(* Allow infinite stuttering to prevent deadlock on termination. *)
-Terminating == /\ \A self \in ProcSet: pc[self] = "Done"
-               /\ UNCHANGED vars
-
-Next == (\E self \in Threads: inc(self))
-           \/ Terminating
-
-Spec == /\ Init /\ [][Next]_vars
-        /\ \A self \in Threads : WF_vars(inc(self))
-
-Termination == <>(\A self \in ProcSet: pc[self] = "Done")
-
-\* END TRANSLATION 
 
 ====

@@ -16,12 +16,6 @@ VARIABLES shared, state, count, local, lock
 
 vars == << shared, state, count, local, lock >>
 
-Min(X, Y) == IF X < Y THEN X ELSE Y
-
-MinShared == IF K = 1
-  THEN N
-  ELSE Min(2, N)
-
 Threads == 0..(K - 1)
 
 TypeOK ==
@@ -100,6 +94,6 @@ Spec == Init /\ [][Next]_vars /\ Progress
 Correctness == <>
   IF RequireCorrectness
   THEN shared = K * N /\ IsUnlocked \* correctness when each increment is atomic
-  ELSE [](shared > MinShared) \* minimum result when increments can overlap
+  ELSE TRUE \* TODO minimum result when increments can overlap
 
 ====

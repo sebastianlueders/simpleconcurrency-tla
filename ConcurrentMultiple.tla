@@ -4,24 +4,23 @@
 
 EXTENDS Naturals
 
-Min(X, Y) == IF X < Y THEN X ELSE Y
-
-K == 2 \* number of threads
-N == 1 \* number of increments per thread
-
-MinShared == IF K = 1
-  THEN N
-  ELSE Min(2, N)
+CONSTANTS 
+    K, \* number of concurrent threads
+    N, \* number of repetitions per thread
+    RequireCorrectness,
+    ImplementTermination,
+    ImplementProgress,
+    ImplementLocking
 
 VARIABLES shared, state, count, local, lock
 
 vars == << shared, state, count, local, lock >>
 
-RequireCorrectness == FALSE
+Min(X, Y) == IF X < Y THEN X ELSE Y
 
-ImplementTermination == TRUE
-ImplementProgress == TRUE
-ImplementLocking == FALSE
+MinShared == IF K = 1
+  THEN N
+  ELSE Min(2, N)
 
 Threads == 0..(K - 1)
 

@@ -80,6 +80,6 @@ Progress == ImplementProgress =>
 Spec == Init /\ [][Next]_vars /\ Progress
 
 Correctness == <>(RequireCorrectness =>
-  (shared = K /\ IsUnlocked))
+  [](shared = K /\ IsUnlocked))
 
 ====

@@ -1,5 +1,7 @@
 # TLA+ Simple Concurrency Example
 
+[![Syntax-check models](https://github.com/lucformalmethodscourse/simpleconcurrency-tla/actions/workflows/main.yml/badge.svg)](https://github.com/lucformalmethodscourse/simpleconcurrency-tla/actions/workflows/main.yml)
+
 This example models a very basic system where N threads concurrently attempt to increment a shared variable.
 
 ## References

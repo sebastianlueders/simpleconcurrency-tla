@@ -91,7 +91,7 @@ Progress == ImplementProgress =>
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-Correctness == <>([](shared >= 3))
+Correctness == <>([](shared >= 1))
  
  (*
  

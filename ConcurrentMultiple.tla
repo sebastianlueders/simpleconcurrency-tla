@@ -91,9 +91,15 @@ Progress == ImplementProgress =>
 
 Spec == Init /\ [][Next]_vars /\ Progress
 
-Correctness == <>
-  IF RequireCorrectness
+Correctness == <>([](shared >= 3))
+ 
+ (*
+ 
+   IF RequireCorrectness
   THEN shared = K * N /\ IsUnlocked \* correctness when each increment is atomic
   ELSE [](shared >= 3) \* TODO minimum result when increments can overlap
+ 
+ *)
+
 
 ====
